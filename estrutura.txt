@@ -1,0 +1,4 @@
+application - tudo que é comum na aplicação
+models
+modules
+repositories
