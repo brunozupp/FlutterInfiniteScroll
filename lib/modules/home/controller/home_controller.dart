@@ -10,6 +10,9 @@ class HomeController extends GetxController {
   final _paginationFilter = PaginationFilter().obs;
   final _lastPage = false.obs;
 
+  var _loading = false.obs;
+  bool get loading => _loading.value; 
+
   List<UserModel> get users => _users.toList();
   int get limit => _paginationFilter.value.limit;
   int get _page => _paginationFilter.value.page;
@@ -27,6 +30,9 @@ class HomeController extends GetxController {
   }
 
   void findUsers() async {
+
+    _loading(true);
+
     final usersData = await _userRepository.findAll(_paginationFilter.value);
   
     if(usersData.isEmpty) {
@@ -34,6 +40,8 @@ class HomeController extends GetxController {
     }
 
     _users.addAll(usersData);
+
+    _loading(false);
   }
 
   // vai recarregar tudo, por isso da page = 1

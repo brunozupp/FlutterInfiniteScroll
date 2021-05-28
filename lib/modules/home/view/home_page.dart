@@ -39,22 +39,48 @@ class HomePage extends StatelessWidget {
           )),
         ],
       ),
-      body: Obx(() => LazyLoadScrollView(
-        onEndOfPage: () => _controller.nextPage(),
-        isLoading: _controller.lastPage,
-        child: ListView.builder(
-          itemCount: _controller.users.length,
-          itemBuilder: (context, index) {
-            final user = _controller.users[index];
-
-            return ListTile(
-              leading: Text(user.id),
-              title: Text(user.name),
-              subtitle: Text(user.username),
-            );
-          },
-        ),
-      )),
+      body: Obx(() => _controller.loading && _controller.users.isEmpty 
+        ? Center(
+            child: Container(
+              margin: EdgeInsets.symmetric(vertical: 20),
+              width: 50,
+              height: 50,
+              child: CircularProgressIndicator()
+            )
+          )
+        : _buildListUsers()
+      ),
     );
   }
+
+  Widget _buildListUsers() => LazyLoadScrollView(
+    onEndOfPage: () => _controller.nextPage(),
+    isLoading: _controller.lastPage,
+    child: ListView.builder(
+      itemCount: _controller.users.length + 1,
+      itemBuilder: (context, index) {
+
+        if(_controller.users.length == index) {
+          return _controller.loading
+            ? Center(
+                child: Container(
+                  margin: EdgeInsets.symmetric(vertical: 20),
+                  width: 50,
+                  height: 50,
+                  child: CircularProgressIndicator()
+                ),
+            )
+            : Container();
+        }
+
+        final user = _controller.users[index];
+
+        return ListTile(
+          leading: Text(user.id),
+          title: Text(user.name),
+          subtitle: Text(user.username),
+        );
+      },
+    ),
+  );
 }
